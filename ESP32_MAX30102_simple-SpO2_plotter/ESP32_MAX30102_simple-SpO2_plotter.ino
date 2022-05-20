@@ -89,22 +89,31 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 MAX30105 particleSensor;
 
 // ===============hart rate variable =================================
-const byte RATE_SIZE = 10; //Increase this for more averaging. 4 is good.
+const byte RATE_SIZE = 20; //Increase this for more averaging. 4 is good.
 byte rates[RATE_SIZE]; //Array of heart rates
 byte rateSpot = 0;
 long lastBeat = 0; //Time at which the last beat occurred
 float beatsPerMinute;
 int beatAvg;
 
-float beatData[5];
+float beatData[9];
 bool checkForBeat(float data){
   beatData[0] = beatData[1];
   beatData[1] = beatData[2];
   beatData[2] = beatData[3];
   beatData[3] = beatData[4];
-  beatData[4] = data;
+  beatData[4] = beatData[5];
+  beatData[5] = beatData[6];
+  beatData[6] = beatData[7];
+  beatData[7] = beatData[8];
+  beatData[8] = data;
 
-  if((beatData[2] > beatData[0]) &&  (beatData[2] >= beatData[1]) &&  (beatData[2] >= beatData[3]) &&  (beatData[2] > beatData[4]))
+  if((beatData[4] > beatData[0]) &&  (beatData[4] >= beatData[5]) &&  
+     (beatData[4] > beatData[1]) &&  (beatData[4] > beatData[6]) &&  
+     (beatData[4] > beatData[2]) &&  (beatData[4] > beatData[7]) &&   
+     (beatData[4] >= beatData[3]) &&  (beatData[4] > beatData[8])
+     
+     )
   {
     return true;
   }
@@ -265,7 +274,7 @@ void loop()
               for (byte x = 0; x < RATE_SIZE; x++)
                 beatAvg += rates[x];
               beatAvg /= RATE_SIZE;
-              if(beatAvg > 100) beatAvg = 100;
+              
             }
           }
         }
